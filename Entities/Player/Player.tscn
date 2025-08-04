@@ -1,0 +1,82 @@
+[gd_scene load_steps=9 format=3 uid="uid://bdqcutktqtcxw"]
+
+[ext_resource type="Script" uid="uid://c4yy1akfirsh" path="res://Entities/Player/player.gd" id="1_trhjy"]
+[ext_resource type="Texture2D" uid="uid://cfh1ps5eugq1r" path="res://icon.svg" id="2_asllk"]
+[ext_resource type="Script" uid="uid://bqewuukva5sr2" path="res://Entities/Player/body.gd" id="4_hk8lp"]
+[ext_resource type="PackedScene" uid="uid://dh624omjh5xdg" path="res://Entities/Player/ClimbRaycast/climb_raycast.tscn" id="5_5tm2e"]
+[ext_resource type="PackedScene" uid="uid://c5tnutb3a2aqt" path="res://Entities/Player/FBRIK/FBRIK.tscn" id="6_g4140"]
+[ext_resource type="PackedScene" uid="uid://02ynlc7sko8n" path="res://Components/Arrow/Arrow.tscn" id="6_hj1c0"]
+[ext_resource type="Script" uid="uid://crgcuh1yaojkd" path="res://Components/WallMovement.gd" id="6_t38ms"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_yuso2"]
+radius = 31.0
+height = 64.0
+
+[node name="Player" type="Node2D" groups=["Player"]]
+visibility_layer = 7
+script = ExtResource("1_trhjy")
+metadata/_edit_vertical_guides_ = [-32.0, 32.0]
+metadata/_edit_horizontal_guides_ = [-32.0, 32.0]
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+unique_name_in_owner = true
+motion_mode = 1
+
+[node name="Icon" type="Sprite2D" parent="CharacterBody2D"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_asllk")
+
+[node name="ClimbRaycast" parent="CharacterBody2D" instance=ExtResource("5_5tm2e")]
+unique_name_in_owner = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+shape = SubResource("CapsuleShape2D_yuso2")
+
+[node name="Body" type="Node2D" parent="CharacterBody2D"]
+unique_name_in_owner = true
+script = ExtResource("4_hk8lp")
+
+[node name="LLeg" parent="CharacterBody2D/Body" instance=ExtResource("6_g4140")]
+position = Vector2(-3, 6)
+
+[node name="StartMarker" parent="CharacterBody2D/Body/LLeg" index="0"]
+position = Vector2(34, -6)
+
+[node name="EndMarker" parent="CharacterBody2D/Body/LLeg" index="1"]
+position = Vector2(140, 109)
+
+[node name="HintLine" parent="CharacterBody2D/Body/LLeg" index="2"]
+points = PackedVector2Array(31, 0, 81.8312, 55.147, 132.662, 110.294)
+
+[node name="LRayCast2D" type="RayCast2D" parent="CharacterBody2D/Body/LLeg"]
+unique_name_in_owner = true
+position = Vector2(-25, -6)
+target_position = Vector2(64, 96)
+
+[node name="RLeg" parent="CharacterBody2D/Body" instance=ExtResource("6_g4140")]
+position = Vector2(4, 6)
+
+[node name="StartMarker" parent="CharacterBody2D/Body/RLeg" index="0"]
+position = Vector2(-36, -7)
+
+[node name="EndMarker" parent="CharacterBody2D/Body/RLeg" index="1"]
+position = Vector2(-48, 119)
+
+[node name="HintLine" parent="CharacterBody2D/Body/RLeg" index="2"]
+points = PackedVector2Array(-32, -1, 2.06792, 65.816, -44, 125)
+
+[node name="RRayCast2D" type="RayCast2D" parent="CharacterBody2D/Body/RLeg"]
+unique_name_in_owner = true
+position = Vector2(24, -6)
+target_position = Vector2(-64, 99)
+
+[node name="Arrow" parent="CharacterBody2D" instance=ExtResource("6_hj1c0")]
+unique_name_in_owner = true
+
+[node name="WallMovement" type="Node2D" parent="." node_paths=PackedStringArray("target")]
+script = ExtResource("6_t38ms")
+target = NodePath("../CharacterBody2D")
+metadata/_custom_type_script = "uid://crgcuh1yaojkd"
+
+[editable path="CharacterBody2D/Body/LLeg"]
+[editable path="CharacterBody2D/Body/RLeg"]

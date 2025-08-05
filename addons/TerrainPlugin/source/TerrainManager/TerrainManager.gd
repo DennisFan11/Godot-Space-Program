@@ -2,7 +2,7 @@
 class_name TerrainManager
 extends Node2D
 
-const BLOCK_SIZE:Vector2 = Vector2(50.0, 50.0)
+const BLOCK_SIZE:Vector2 = Vector2(250.0, 250.0)
 
 @export var _map_data: Array
 

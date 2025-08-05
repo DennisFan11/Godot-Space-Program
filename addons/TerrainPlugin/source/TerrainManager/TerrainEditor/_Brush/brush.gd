@@ -22,7 +22,7 @@ var Radius:float = 70.0
 
 
 var Shape:SHAPE = SHAPE.CIRCLE
-var PointSize:float = 20
+var PointSize:float = 50
 var Type:TYPE = TYPE.POINT
 
 

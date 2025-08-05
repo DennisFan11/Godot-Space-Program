@@ -135,7 +135,7 @@ static func Calculate_polygon_area(origin: PackedVector2Array, local_polygon: Pa
 static func VertexOptimization(polygon_points: PackedVector2Array, origin:PackedVector2Array, BlockSize:Vector2):
 	if polygon_points.size()<= 10:
 		return polygon_points
-	const merge_distance = 10.0 # 10 一格 25
+	const merge_distance = 100.0 # 10 一格 200
 	const iterations = 1 #20 3 
 	const angle_threshold = 15.0 # 10
 	var cut_edges = _get_cut_indices(polygon_points, origin)
@@ -146,9 +146,11 @@ static func VertexOptimization(polygon_points: PackedVector2Array, origin:Packed
 	var BLOCK_SIZE = BlockSize.x
 	var arr = []
 	for i:Vector2 in polygon_points:
-		if (fmod(i.x, BLOCK_SIZE) > 10) and (fmod(i.y, BLOCK_SIZE) > 10):
+		
+		if (absf(snappedf(i.x, BLOCK_SIZE)-i.x) > 10) \
+			and (absf(snappedf(i.y, BLOCK_SIZE)-i.y) > 10):
 			arr.append(i)
-	#cut_edges = arr
+	cut_edges = arr
 	cut_edges += arr
 	
 	

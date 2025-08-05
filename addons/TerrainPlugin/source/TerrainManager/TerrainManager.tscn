@@ -5,7 +5,7 @@
 [ext_resource type="Shader" uid="uid://cvcwgowkk3fmw" path="res://addons/TerrainPlugin/source/TerrainManager/terrain_shader.tres" id="2_xue7e"]
 
 [sub_resource type="Curve" id="Curve_xue7e"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.159918), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="CurveTexture" id="CurveTexture_xue7e"]

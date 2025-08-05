@@ -17,10 +17,13 @@ var Position:Vector2:
 var Polygon:PackedVector2Array: # global polygon
 	set(new):
 		Polygon = new
+		if new.size() <= 2:
+			return
 		var local_polygon = _to_local_polygon(new)
 		%Polygon2D.polygon = local_polygon
 		%CollisionPolygon2D.set_deferred("polygon", local_polygon)
 		%Line2D.points = local_polygon
+		%LightOccluder2D.occluder.polygon = local_polygon
 
 ## 將全域座標的 polygon 轉換為本地 
 func _to_local_polygon( global_polygon:PackedVector2Array )-> PackedVector2Array:

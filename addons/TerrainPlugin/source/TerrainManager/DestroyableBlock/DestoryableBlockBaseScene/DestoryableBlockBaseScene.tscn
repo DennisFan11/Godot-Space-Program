@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://chs71krydajvg"]
+[gd_scene load_steps=6 format=3 uid="uid://chs71krydajvg"]
 
 [ext_resource type="Script" uid="uid://tm3dt4pnwkc" path="res://addons/TerrainPlugin/source/TerrainManager/DestroyableBlock/DestoryableBlockBaseScene/destoryable_block_base_scene.gd" id="1_e3dcx"]
 [ext_resource type="Texture2D" uid="uid://n11tyncaiydx" path="res://addons/TerrainPlugin/source/TerrainManager/DestroyableBlock/DestoryableBlockBaseScene/TerrainTexture.jpg" id="2_52sao"]
@@ -9,6 +9,15 @@ vec2 random(vec2 uv) {
 	return vec2(fract(sin(dot(uv.xy,
 		vec2(12.9898,78.233))) * 43758.5453123));
 }
+
+varying mat4 world_to_screen;
+varying mat4 screen_to_world;
+
+void vertex(){
+	world_to_screen = SCREEN_MATRIX * CANVAS_MATRIX;
+	screen_to_world = inverse(world_to_screen);
+}
+
 vec2 voronoi(vec2 uv, float columns, float rows) {
 
 	vec2 index_uv = floor(vec2(uv.x * columns, uv.y * rows));
@@ -37,23 +46,48 @@ uniform float scale  = 1.0;
 uniform vec4 color: source_color;
 const vec2 fixed_scale = vec2(1.0, 1.6);
 void fragment() {
-	vec2 cell = voronoi(UV * scale * fixed_scale, 10.0, 5.0);
+
+
+
+	vec2 uv = SCREEN_UV;
+	// Puts uv in world space
+
+	uv = uv * 2.0 - 1.0;
+	uv = (screen_to_world * vec4(uv,0,1)).xy;
+
+	// Apply an offset of 20 units
+	vec2 cell = voronoi(uv * scale * fixed_scale, 10.0, 5.0);
 	float brightness = 0.5 + 0.5 * cell.r; // 將 0~1 映射到 0.5~1.0
 	COLOR = vec4(color.rgb * brightness, 1.0);
+
+	// Puts uv back in screen space
+	uv = (world_to_screen * vec4(uv,0,1)).xy;
+	uv = uv * 0.5 + 0.5;
+
+
+
 }"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_nwrlq"]
 shader = SubResource("Shader_52sao")
-shader_parameter/scale = 35.02
+shader_parameter/scale = 0.002
 shader_parameter/color = Color(0.683787, 0.304537, 0, 1)
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_0hxpu"]
+resource_local_to_scene = true
+polygon = PackedVector2Array(0, 0, 1, 0, 1, 1, 0, 1)
+
 [node name="DestoryableBlockBaseScene" type="StaticBody2D" groups=["Block"]]
+light_mask = 2
+visibility_layer = 2
 collision_layer = 524289
 collision_mask = 524289
 script = ExtResource("1_e3dcx")
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 unique_name_in_owner = true
+light_mask = 2
+visibility_layer = 3
 texture_filter = 1
 texture_repeat = 2
 material = SubResource("ShaderMaterial_nwrlq")
@@ -62,6 +96,7 @@ texture = ExtResource("2_52sao")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 unique_name_in_owner = true
+polygon = PackedVector2Array(0, 0, 1, 0, 1, 1, 0, 1)
 
 [node name="Line2D" type="Line2D" parent="."]
 unique_name_in_owner = true
@@ -69,3 +104,7 @@ visible = false
 closed = true
 width = 3.0
 default_color = Color(0.762206, 0.479328, 0, 1)
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+unique_name_in_owner = true
+occluder = SubResource("OccluderPolygon2D_0hxpu")
